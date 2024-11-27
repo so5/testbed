@@ -1,3 +1,4 @@
 #!/bin/bash
-
+echo DEBUG: build start
+ls -la
 docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64  -t naoso5/test-sshd --push .
