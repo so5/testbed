@@ -1,6 +1,8 @@
 #!/bin/bash
 docker buildx ls
 docker buildx create --name myBuilder --use --bootstrap
-echo DEBUG: post_checkout done
-ls -la
 docker buildx ls
+ls -la
+echo
+echo DEBUG: post_checkout done
+echo
