@@ -1,0 +1,4 @@
+#!/bin/bash
+echo
+echo do nothing at push phase because buildx already pushd images at build phase
+echo
