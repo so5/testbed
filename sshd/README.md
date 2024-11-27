@@ -1,4 +1,4 @@
-# testSshd
+# test-sshd
 test server for ssh clients
 
 ** please do NOT use this container on public network **
