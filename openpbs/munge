@@ -1,0 +1,6 @@
+#!/sbin/openrc-run
+name="munge v0.5.16"
+description="MUNGE Uid 'N' Gid Emporium"
+command="/opt/munge/sbin/munged"
+command_user="munge:munge"
+pidfile="/run/munge/munged.pid"
