@@ -1,7 +1,8 @@
-FROM naoso5/test-sshd AS builder
+FROM alpine:3.20.3 AS builder
 
 # get OpenPBS and munge source
 WORKDIR /root
+USER root
 RUN wget -O openpbs.tgz https://github.com/openpbs/openpbs/archive/refs/tags/v23.06.06.tar.gz &&\
     mkdir src &&\
     tar xfz openpbs.tgz -C src --strip-components 1
@@ -72,6 +73,7 @@ RUN ./autogen.sh &&\
 FROM naoso5/test-sshd AS release
 EXPOSE 22
 VOLUME ["/sys/fs/cgroup"]
+USER root
 
 COPY --from=builder /opt /opt
 
@@ -122,9 +124,6 @@ HEALTHCHECK --interval=10s --start-period=5s --retries=5 CMD pgrep pbs_server &&
                                                           pgrep pbs_ds_monitor &&\
                                                           pgrep munged &&\
                                                           pg_isready -U postgres
-
-USER testuser
-RUN echo ". /opt/pbs/etc/pbs.sh" > /home/testuser/profile
 
 USER root
 ENTRYPOINT ["/sbin/init"]
