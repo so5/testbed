@@ -4,3 +4,8 @@ description="MUNGE Uid 'N' Gid Emporium"
 command="/opt/munge/sbin/munged"
 command_user="munge:munge"
 pidfile="/run/munge/munged.pid"
+
+start_pre() {
+	checkpath -d -o munge:munge -m 0755 /run/munge
+}
+

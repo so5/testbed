@@ -114,6 +114,7 @@ RUN rc-update add munge
 #setup PBS
 RUN /opt/pbs/libexec/pbs_postinstall
 COPY pbs_init /etc/init.d/pbs
+COPY pbs.sh /etc/profile.d/pbs.sh
 
 RUN rc-update add pbs
 
