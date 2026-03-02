@@ -116,6 +116,12 @@ COPY munge /etc/init.d/munge
 RUN ln -s /opt/munge/lib/libmunge.so /usr/lib/
 RUN rc-update add munge
 
+# make pbs and munge commands available for non-interactive ssh
+RUN ln -s /opt/pbs/bin/* /usr/bin/ && \
+    ln -s /opt/pbs/sbin/* /usr/sbin/ && \
+    ln -s /opt/munge/bin/* /usr/bin/ && \
+    ln -s /opt/munge/sbin/* /usr/sbin/
+
 #setup PBS
 RUN /opt/pbs/libexec/pbs_postinstall
 COPY pbs_init /etc/init.d/pbs
