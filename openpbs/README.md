@@ -25,10 +25,34 @@ you can use OpenPBS commands such as qsub qdel... after login to container as `t
 ## How to use
 ### bootup
 
+For OpenPBS and OpenRC to manage services and track job processes correctly, you **must** use `--privileged`, `--cap-add SYS_RESOURCE`, and mount the cgroup volume. This path is universal across Mac, Windows (WSL2), and Linux.
+
+```bash
+docker run --rm -d \
+  --name CONTAINER_NAME \
+  --privileged \
+  --cap-add SYS_RESOURCE \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+  naoso5/test-openpbs
 ```
-docker run --rm -d  --name CONTAINER_NAME --cap-add SYS_RESOURCE naoso5/test-openpbs
+
+### Docker Compose
+Alternatively, use the following `compose.yml`:
+
+```yaml
+services:
+  openpbs:
+    image: naoso5/test-openpbs
+    container_name: test-pbs
+    privileged: true
+    cap_add:
+      - SYS_RESOURCE
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+      - "2222:22"
 ```
-you can use any other container name for `CONTAINER_NAME`
+Run with `docker compose up -d`.
 
 ## customize server
 After container become healty state, you can use qmgr as follows.
