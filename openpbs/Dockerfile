@@ -56,6 +56,8 @@ COPY dummy_functions.c ./
 RUN sed -i /fstab.h/d configure.ac &&\
     sed -i s/eval.h/Python.h/ src/lib/Libpython/pbs_python_external.c &&\
     sed -i 's/pbs_server_bin_LDADD =/pbs_server_bin_LDADD = $(top_builddir)\/dummy_functions.o/' src/server/Makefile.am &&\
+    sed -i 's/pbs_mom_LDADD =/pbs_mom_LDADD = $(top_builddir)\/dummy_functions.o/' src/resmom/Makefile.am &&\
+    sed -i 's/pbs_mom_bin_LDADD =/pbs_mom_bin_LDADD = $(top_builddir)\/dummy_functions.o/' src/resmom/Makefile.am &&\
     sed -i 's/pbs_rcp_LDADD = @socket_lib@/pbs_rcp_LDADD = @socket_lib@ $(top_builddir)\/dummy_functions.o/' src/mom_rcp/Makefile.am &&\
     sed -i -e 's/pgsql_share_dir="\/usr\/pgsql-${psql_ver}/pgsql_share_dir="\/usr\/share\/postgresql16/' \
            -e 's/pgsql_lib_dir="\/usr\/pgsql-${psql_ver}/pgsql_lib_dir="\/usr\/lib\/postgresql16/' \

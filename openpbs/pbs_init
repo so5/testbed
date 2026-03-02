@@ -35,7 +35,7 @@ start(){
   else
     echo '$clienthost '${hostname} >${mom_config}
   fi
-  grep -q '$usecp' ${mom_config} || echo "\$usecp ${hostname}:/ /" >>${mom_config}
+  grep -q '$usecp' ${mom_config} || echo '$usecp *:/ /' >>${mom_config}
 
   mkdir -p /run/postgresql 2>/dev/null
   chown postgres:postgres /run/postgresql
