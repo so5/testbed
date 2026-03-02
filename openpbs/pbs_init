@@ -29,16 +29,13 @@ start(){
   grep -q 'PBS_SUPPORTED_AUTH_METHODS=munge' /etc/pbs.conf || echo 'PBS_SUPPORTED_AUTH_METHODS=munge' >> /etc/pbs.conf
 
   mkdir -p $(dirname ${mom_config}) 2>/dev/null
-  grep '$clienthost' ${mom_config} 1>/dev/null 2>&1
-  if [  $? -eq 0 ];then
+  if [ -f ${mom_config} ]; then
     sed -i "s/\$clienthost .*/\$clienthost ${hostname}/" ${mom_config}
+    sed -i "s/\$use_cp/\$usecp/" ${mom_config}
   else
     echo '$clienthost '${hostname} >${mom_config}
   fi
-  grep '$use_cp' ${mom_config} 1>/dev/null 2>&1
-  if [ $? -ne 0 ];then
-    echo '$use_cp * / /' >>${mom_config}
-  fi
+  grep -q '$usecp' ${mom_config} || echo "\$usecp ${hostname}:/ /" >>${mom_config}
 
   mkdir -p /run/postgresql 2>/dev/null
   chown postgres:postgres /run/postgresql

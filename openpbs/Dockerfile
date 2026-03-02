@@ -57,9 +57,12 @@ RUN sed -i /fstab.h/d configure.ac &&\
     sed -i s/eval.h/Python.h/ src/lib/Libpython/pbs_python_external.c &&\
     sed -i 's/pbs_server_bin_LDADD =/pbs_server_bin_LDADD = $(top_builddir)\/dummy_functions.o/' src/server/Makefile.am &&\
     sed -i 's/pbs_rcp_LDADD = @socket_lib@/pbs_rcp_LDADD = @socket_lib@ $(top_builddir)\/dummy_functions.o/' src/mom_rcp/Makefile.am &&\
-    sed -i -e 's/pgsql_share_dir="\/usr\/pgsql-${psql_ver}/pgsql_share_dir="\/usr\/share\/postgresql/' \
+    sed -i -e 's/pgsql_share_dir="\/usr\/pgsql-${psql_ver}/pgsql_share_dir="\/usr\/share\/postgresql16/' \
            -e 's/pgsql_lib_dir="\/usr\/pgsql-${psql_ver}/pgsql_lib_dir="\/usr\/lib\/postgresql16/' \
-           -e '/pg_resetxlog/c    cp "$PGSQL_BIN\/pg_resetwal" "$PBS_HOME\/pgsql.forupgrade\/bin\/pg_resetxlog"'\
+           -e 's/pgsql_bin_dir="\/usr\/pgsql-${psql_ver}/pgsql_bin_dir="\/usr\/libexec\/postgresql16/' \
+           -e 's/pgsql_share_dir="\/usr\/share\/postgresql\/share"/pgsql_share_dir="\/usr\/share\/postgresql16"/' \
+           -e 's/pgsql_lib_dir="\/usr\/lib\/postgresql16\/lib"/pgsql_lib_dir="\/usr\/lib\/postgresql16"/' \
+           -e '/pg_resetxlog/c    cp "\/usr\/libexec\/postgresql16\/pg_resetwal" "$PBS_HOME\/pgsql.forupgrade\/bin\/pg_resetxlog"'\
     src/cmds/scripts/pbs_habitat.in &&\
     sed -i -e '528 c          sleep 5' src/lib/Libdb/pgsql/pbs_db_utility
 
