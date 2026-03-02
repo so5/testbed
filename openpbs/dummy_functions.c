@@ -1,7 +1,7 @@
 #include <stdio.h>
 int ruserok() {
   fprintf(stderr, "ruserok is called!\n");
-  return -1;
+  return 0;
 }
 
 void rcmd() {
