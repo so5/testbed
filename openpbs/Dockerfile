@@ -136,7 +136,7 @@ COPY pbs.sh /etc/profile.d/pbs.sh
 
 RUN rc-update add pbs
 
-HEALTHCHECK --interval=10s --start-period=5s --retries=5 CMD pgrep pbs_server &&\
+HEALTHCHECK --interval=20s --start-period=60s --retries=10 CMD pgrep pbs_server &&\
                                                           pgrep pbs_comm &&\
                                                           pgrep pbs_mom &&\
                                                           pgrep pbs_sched &&\

@@ -10,7 +10,7 @@ prestart(){
   # cleanup stale lock files
   find /var/spool/pbs -name "*.lock" -delete
   rm -f /var/spool/pbs/datastore/postmaster.pid
-  
+
   # Ensure correct permissions for spool directory
   mkdir -p /var/spool/pbs/spool /var/spool/pbs/undelivered
   chmod 1777 /var/spool/pbs/spool /var/spool/pbs/undelivered
@@ -33,6 +33,9 @@ start(){
   echo "\$restricted 127.0.0.1" >> ${mom_config}
   echo "\$restricted ${hostname}" >> ${mom_config}
   echo "\$usecp *:/ /" >> ${mom_config}
+  echo "\$min_check_poll 5" >> ${mom_config}
+  echo "\$max_check_poll 10" >> ${mom_config}
+  echo "\$use_proc_tracking True" >> ${mom_config}
 
   mkdir -p /run/postgresql 2>/dev/null
   chown postgres:postgres /run/postgresql
@@ -41,11 +44,6 @@ start(){
   export PBS_DATA_SERVICE_PORT=5432
 
   ${org_script} start
-
-  # optimize server for responsiveness
-  /opt/pbs/bin/qmgr -c "set server scheduling_iteration = 10"
-  /opt/pbs/bin/qmgr -c "set server query_other_jobs = True"
-  /opt/pbs/bin/qmgr -c "set server node_fail_requeue = 0"
 }
 
 stop(){
