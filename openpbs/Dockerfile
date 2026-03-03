@@ -127,8 +127,6 @@ RUN /opt/pbs/libexec/pbs_postinstall
 COPY pbs_init /etc/init.d/pbs
 COPY pbs.sh /etc/profile.d/pbs.sh
 
-RUN echo "export PATH=/opt/munge/bin:\$PATH" >> /etc/profile.d/pbs.sh
-
 RUN rc-update add pbs
 
 HEALTHCHECK --interval=10s --start-period=5s --retries=5 CMD pgrep pbs_server &&\
