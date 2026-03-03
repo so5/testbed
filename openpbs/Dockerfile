@@ -48,13 +48,20 @@ RUN ./configure --prefix=/opt/munge --sysconfdir=/etc  --localstatedir=/var --ru
 
 # build OpenPBS from source
 WORKDIR /root/src
+RUN echo "#define _PATH_FSTAB \"/etc/fstab\"" > /usr/include/fstab.h
+RUN echo "struct fstab { char *fs_spec; char *fs_file; char *fs_vfstype; char *fs_mntops; char *fs_type; int fs_freq; int fs_passno; };" >> /usr/include/fstab.h
+RUN echo "struct fstab *getfsent(void) { return 0; }" >> /usr/include/fstab.h
+RUN echo "struct fstab *getfsspec(const char *p) { return 0; }" >> /usr/include/fstab.h
+RUN echo "struct fstab *getfsfile(const char *p) { return 0; }" >> /usr/include/fstab.h
+RUN echo "int setfsent(void) { return 1; }" >> /usr/include/fstab.h
+RUN echo "void endfsent(void) {}" >> /usr/include/fstab.h
+
 COPY execinfo_dummy.h /usr/include/execinfo.h
 COPY dummy_functions.h src/include/dummy_functions.h
 COPY dummy_functions.c ./
 
 # quick and dirty hack for alpine linux
-RUN sed -i /fstab.h/d configure.ac &&\
-    sed -i s/eval.h/Python.h/ src/lib/Libpython/pbs_python_external.c &&\
+RUN sed -i s/eval.h/Python.h/ src/lib/Libpython/pbs_python_external.c &&\
     sed -i 's/pbs_server_bin_LDADD =/pbs_server_bin_LDADD = $(top_builddir)\/dummy_functions.o/' src/server/Makefile.am &&\
     sed -i 's/pbs_mom_LDADD =/pbs_mom_LDADD = $(top_builddir)\/dummy_functions.o/' src/resmom/Makefile.am &&\
     sed -i 's/pbs_mom_bin_LDADD =/pbs_mom_bin_LDADD = $(top_builddir)\/dummy_functions.o/' src/resmom/Makefile.am &&\
