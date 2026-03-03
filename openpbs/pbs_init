@@ -29,13 +29,10 @@ start(){
   grep -q 'PBS_SUPPORTED_AUTH_METHODS=munge' /etc/pbs.conf || echo 'PBS_SUPPORTED_AUTH_METHODS=munge' >> /etc/pbs.conf
 
   mkdir -p $(dirname ${mom_config}) 2>/dev/null
-  if [ -f ${mom_config} ]; then
-    sed -i "s/\$clienthost .*/\$clienthost ${hostname}/" ${mom_config}
-    sed -i "s/\$use_cp/\$usecp/" ${mom_config}
-  else
-    echo '$clienthost '${hostname} >${mom_config}
-  fi
-  grep -q '$usecp' ${mom_config} || echo '$usecp *:/ /' >>${mom_config}
+  echo "\$clienthost ${hostname}" > ${mom_config}
+  echo "\$restricted 127.0.0.1" >> ${mom_config}
+  echo "\$restricted ${hostname}" >> ${mom_config}
+  echo "\$usecp *:/ /" >> ${mom_config}
 
   mkdir -p /run/postgresql 2>/dev/null
   chown postgres:postgres /run/postgresql
@@ -44,6 +41,11 @@ start(){
   export PBS_DATA_SERVICE_PORT=5432
 
   ${org_script} start
+
+  # optimize server for responsiveness
+  /opt/pbs/bin/qmgr -c "set server scheduling_iteration = 10"
+  /opt/pbs/bin/qmgr -c "set server query_other_jobs = True"
+  /opt/pbs/bin/qmgr -c "set server node_fail_requeue = 0"
 }
 
 stop(){
