@@ -22,20 +22,22 @@ depend(){
 }
 
 start(){
-  # rewrite PBS config files to start all server
-  sed -i -e "s/PBS_SERVER=.*/PBS_SERVER=${hostname}/" -e "s/PBS_START_MOM=0/PBS_START_MOM=1/" /etc/pbs.conf
+  # get current runtime hostname
+  actual_hostname=$(cat /etc/hostname)
+
+  # rewrite PBS config files to start all server with current runtime hostname
+  sed -i -e "s/PBS_SERVER=.*/PBS_SERVER=${actual_hostname}/" -e "s/PBS_START_MOM=0/PBS_START_MOM=1/" /etc/pbs.conf
 
   grep -q "PBS_AUTH_METHOD=MUNGE" /etc/pbs.conf || echo "PBS_AUTH_METHOD=MUNGE" >> /etc/pbs.conf
   grep -q 'PBS_SUPPORTED_AUTH_METHODS=munge' /etc/pbs.conf || echo 'PBS_SUPPORTED_AUTH_METHODS=munge' >> /etc/pbs.conf
 
   mkdir -p $(dirname ${mom_config}) 2>/dev/null
-  echo "\$clienthost ${hostname}" > ${mom_config}
+  echo "\$clienthost ${actual_hostname}" > ${mom_config}
   echo "\$restricted 127.0.0.1" >> ${mom_config}
-  echo "\$restricted ${hostname}" >> ${mom_config}
+  echo "\$restricted ${actual_hostname}" >> ${mom_config}
   echo "\$usecp *:/ /" >> ${mom_config}
   echo "\$min_check_poll 5" >> ${mom_config}
   echo "\$max_check_poll 10" >> ${mom_config}
-  echo "\$use_proc_tracking True" >> ${mom_config}
 
   mkdir -p /run/postgresql 2>/dev/null
   chown postgres:postgres /run/postgresql
